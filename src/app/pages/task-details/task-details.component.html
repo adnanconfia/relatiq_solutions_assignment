@@ -1,0 +1,46 @@
+<div class="max-w-3xl mx-auto p-6 bg-white rounded shadow mt-10">
+      <button
+        (click)="goBack()"
+        class="mb-6 text-blue-600 hover:text-blue-800 flex items-center gap-2"
+      >
+        ← Back to Tickets
+      </button>
+
+      <h1 class="text-3xl font-semibold mb-4">{{ ticket?.title }}</h1>
+
+      <div class="space-y-4 text-gray-700">
+        <div>
+          <span class="font-semibold">Status:</span>
+          <span
+            [ngClass]="{
+              'text-yellow-600': ticket?.status === 'open',
+              'text-blue-600': ticket?.status === 'in-progress',
+              'text-green-600': ticket?.status === 'completed'
+            }"
+            class="capitalize"
+          >
+            {{ ticket?.status }}
+          </span>
+        </div>
+
+        <div>
+          <span class="font-semibold">Assignee:</span>
+          <span>{{ ticket?.assignee || 'Unassigned' }}</span>
+        </div>
+
+        <div>
+          <span class="font-semibold">Category:</span>
+          <span>{{ ticket?.category || 'N/A' }}</span>
+        </div>
+
+        <div>
+          <span class="font-semibold">Description:</span>
+          <p class="mt-1 text-gray-600" *ngIf="ticket?.description; else noDesc">
+            {{ ticket.description }}
+          </p>
+          <ng-template #noDesc>
+            <p class="italic text-gray-400">No description provided.</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>

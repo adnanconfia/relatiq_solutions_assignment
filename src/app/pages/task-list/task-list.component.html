@@ -1,0 +1,80 @@
+<div class="p-6 max-w-4xl mx-auto">
+  <!-- Filters -->
+  <div class="flex gap-4 mb-6">
+    <select [(ngModel)]="statusFilter" (change)="onFilterChange()" class="border rounded px-3 py-2 w-48">
+      <option value="">All Status</option>
+      <option value="open">Open</option>
+      <option value="in-progress">In Progress</option>
+      <option value="completed">Completed</option>
+    </select>
+
+    <select [(ngModel)]="assigneeFilter" (change)="onFilterChange()" class="border rounded px-3 py-2 w-48">
+      <option value="">All Assignees</option>
+      <option *ngFor="let u of users" [value]="u.name">{{ u.name }}</option>
+    </select>
+  </div>
+
+  <!-- Tickets Table -->
+  <table class="min-w-full bg-white shadow rounded">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="p-3 text-left font-semibold">Title</th>
+        <th class="p-3 text-left font-semibold">Status</th>
+        <th class="p-3 text-left font-semibold">Assignee</th>
+        <th class="p-3 text-center font-semibold">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ticket of filteredTickets" class="border-t">
+        <td class="p-3">{{ ticket.title }}</td>
+        <td class="p-3 capitalize">{{ ticket.status }}</td>
+        <td class="p-3">{{ ticket.assignee || 'Unassigned' }}</td>
+        <td class="p-3 flex flex-col justify-center gap-3 items-center w-40">
+
+  <ng-container *ngIf="ticket.status !== 'completed'">
+
+    <select
+      [value]="ticket.assignee"
+      (change)="assign(ticket.id, $any($event.target).value)"
+      class="border rounded px-2 py-1 w-full"
+      aria-label="Assign user"
+    >
+      <option value="">Assign User</option>
+      <option *ngFor="let u of users" [value]="u.name">{{ u.name }}</option>
+    </select>
+
+    <!-- Buttons based on status -->
+    <button
+      *ngIf="ticket.status === 'open'"
+      (click)="markInProgress(ticket.id)"
+      class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded w-full text-center"
+    >
+      In Progress
+    </button>
+
+    <button
+      *ngIf="ticket.status === 'in-progress'"
+      (click)="complete(ticket.id)"
+      class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded w-full text-center"
+    >
+      Complete
+    </button>
+  </ng-container>
+
+  <!-- View link always visible -->
+  <a
+    [routerLink]="['/tickets', ticket.id]"
+    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded w-full text-center block"
+  >
+    View
+  </a>
+</td>
+
+      </tr>
+
+      <tr *ngIf="filteredTickets.length === 0">
+        <td colspan="4" class="p-4 text-center text-gray-500">No tickets found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
